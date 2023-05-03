@@ -1,11 +1,17 @@
 #pragma once
 
 namespace std {
-	class ROT {
-		private:
-			char lnt, lt;
-			int r;
-		public:
-
-	};
+	string ROT(char message[99], string rotatedmsg, int rotate) {
+		for (int i = 0; i < 99; i++) {
+			if (!isdigit(message[i])){
+				if (isupper(message[i])) {
+					rotatedmsg += (message[i] - 'A' + rotate) % 26 + 'A';
+				}
+				else if (islower(message[i])) {
+					rotatedmsg += (message[i] - 'a' + rotate) % 26 + 'a';
+				}
+			}
+		}
+		return rotatedmsg;
+	}
 }
