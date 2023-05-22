@@ -1,16 +1,17 @@
 #include <iostream>
-#include "ROT.h"
+#include "Beltepher.h"
 using namespace std;
 
 int main() {
+	Beltepher bt;
 	char msg[99];
-	string rotmsg;
+	string rotmsg, input;
 	int rots;
-	cout << "What do you want to encrypt? ";
-	cin.getline(msg, 99);
-	cout << "By how many spaces? ";
-	cin >> rots;
-	rotmsg = ROT(msg, rots);
-	cout << rotmsg << "\n";
+
+	cout << "Enter the string: ";
+	cin >> input;
+	bt.analyzeString(input);
+	
+	system("pause");
 	return 0;
 }
