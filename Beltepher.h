@@ -14,7 +14,18 @@ class Beltepher {
     };
 
     public:
-        std::vector<LetterInfo> analyzeString(const std::string& normessage) {
+        bool compareLetterInfo(const LetterInfo& lhs, const LetterInfo& rhs) {
+            char lhsLower = std::tolower(lhs.letter);
+            char rhsLower = std::tolower(rhs.letter);
+
+            if (lhsLower == rhsLower) {
+                return lhs.letter < rhs.letter; // Compare case-sensitive
+            }
+
+            return lhsLower < rhsLower; // Compare case-insensitive
+        }
+
+        std::string analyzeString(const std::string& normessage) {
             std::vector<LetterInfo> letters;
 
             for (int i = 0; i < normessage.size(); i++) {
@@ -22,7 +33,7 @@ class Beltepher {
 
                 if (isalpha(c)) {
                     auto it = std::find_if(letters.begin(), letters.end(),
-                        [c](const LetterInfo& info) { return info.letter == c; });
+                                        [c](const LetterInfo& info) { return info.letter == c; });
 
                     if (it != letters.end()) {
                         it->count++;
@@ -33,27 +44,57 @@ class Beltepher {
                 }
             }
 
+            std::sort(letters.begin(), letters.end(), [](const LetterInfo& lhs, const LetterInfo& rhs) {
+                char lhsLower = std::tolower(lhs.letter);
+                char rhsLower = std::tolower(rhs.letter);
+
+                if (lhsLower == rhsLower) {
+                    return lhs.letter < rhs.letter; // Compare case-sensitive
+                }
+
+                return lhsLower < rhsLower; // Compare case-insensitive
+            });
+
+            std::string encstring;
             for (const auto& info : letters) {
-                std::cout << info.count << info.letter;
+                encstring += std::to_string(info.count) + info.letter; // Convert count to string
                 for (int position : info.positions) {
-                    std::cout << position;
+                    encstring += std::to_string(position); // Convert position to string
                 }
             }
+            return encstring;
         }
 
-        std::string ROT(char message[100], int rotate) {
-            message[99] = '\0';
-            std::string rotatedmsg;
-            for (int i = 0; message[i] != '\0'; i++) {
-                if (!isdigit(message[i])) {
-                    if (isupper(message[i])) {
-                        rotatedmsg += (message[i] - 'A' + rotate) % 26 + 'A';
-                    }
-                    else if (islower(message[i])) {
-                        rotatedmsg += (message[i] - 'a' + rotate) % 26 + 'a';
-                    }
+        std::string ROT(const std::string& message, int shift) {
+            std::string encryptedMessage;
+            for (char c : message) {
+                if (isalpha(c)) {
+                    char base = isupper(c) ? 'A' : 'a';
+                    char shiftedChar = (c - base + shift) % 26 + base;
+                    encryptedMessage += shiftedChar;
+                } else {
+                    encryptedMessage += c;
                 }
             }
-            return rotatedmsg;
+            return encryptedMessage;
+        }
+
+        std::string hideShift(const std::string& rotatedmsg, int shift, int position) {
+            std::string shifted;
+            if (shift < 10) shifted = "R0" + std::to_string(shift);
+            else shifted = "R" + std::to_string(shift);
+            std::string encstring;
+            
+            int adjstr = position - 1;
+            int endstr = position + 2;
+            // Insert the shifted information at the specified position
+            encstring = rotatedmsg.substr(0, adjstr) + shifted + rotatedmsg.substr(adjstr);
+            
+            int endPosition = position + 2;
+
+            // Construct the final formatted string
+            std::string finalString = std::to_string(position) + "-" + std::to_string(endstr) + ":" + encstring;
+
+            return finalString;
         }
 };
