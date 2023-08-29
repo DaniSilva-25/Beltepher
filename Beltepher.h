@@ -97,4 +97,14 @@ class Beltepher {
 
             return finalString;
         }
+
+        
+        std::string QuickEncrypt(std::string msg){
+            std::string finalmsg = analyzeString(msg);
+            int rtam = 13;
+            finalmsg = ROT(finalmsg, rtam);
+            int siz = finalmsg.size();
+            finalmsg = hideShift(finalmsg, rtam, (siz - 3));
+            return finalmsg;
+        }
 };
